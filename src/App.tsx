@@ -24,7 +24,7 @@ import Drug from './Drug';
 
 const App = () => {
   // drugs sourse
-  const homeopathyUrl = `https://bndby.github.io/fuflomycin/homeopathy.json`;
+  const homeopathyUrl = `https://fuflomycin.github.io/fuflomycin/homeopathy.json`;
 
   // all drugs
   const [drugs, setDrugs] = useState<Drug[]>([]);
