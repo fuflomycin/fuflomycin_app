@@ -17,6 +17,9 @@ import {
   View,
   Card,
   CardItem,
+  Left,
+  Badge,
+  Thumbnail,
 } from 'native-base';
 import {WebView} from 'react-native-webview';
 
@@ -25,6 +28,7 @@ import Drug from './Drug';
 const App = () => {
   // drugs sourse
   const homeopathyUrl = `https://fuflomycin.github.io/fuflomycin/homeopathy.json`;
+  const assetsUrl = 'https://fuflomycin.github.io/fuflomycin/homeopathy/';
 
   // all drugs
   const [drugs, setDrugs] = useState<Drug[]>([]);
@@ -55,6 +59,7 @@ const App = () => {
         for (let i in data) result.push({i, ...data[i]});
         setDrugs(result);
         setResults(result);
+        setPrompt('');
       });
   }, []);
 
@@ -69,61 +74,29 @@ const App = () => {
 
   return (
     <Container>
-      <Header span>
-        <View>
-          <Body>
-            <Title>Расстрельный список препаратов</Title>
-            <Subtitle>Препаратов: 7</Subtitle>
-          </Body>
-          <Item rounded style={{backgroundColor: '#fff', marginBottom: 15}}>
+      <Header transparent>
+        <Form style={{flex: 1}}>
+          <Item>
             <Icon name="search" />
+
             <Input value={prompt} onChangeText={setPrompt} ref={searchRef} />
+            <Badge style={{backgroundColor: 'transparent'}}>
+              <Text style={{color: '#aaa'}}>{drugs.length}</Text>
+            </Badge>
           </Item>
-        </View>
+        </Form>
       </Header>
       <Content padder>
-        {results.length > 1 && (
-          <List>
-            {results.map(drug => (
-              <ListItem>
-                <Text
-                  onPress={() => {
-                    setPrompt(drug.title);
-                  }}>
-                  {drug.title}
-                </Text>
-              </ListItem>
-            ))}
-          </List>
-        )}
-        {results.length === 1 && (
-          <Card>
-            <CardItem header>
-              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                {results[0].title}
-              </Text>
-            </CardItem>
-            <CardItem>
-              <Text>{results[0].section}</Text>
-            </CardItem>
-            <CardItem>
+        <List>
+          {results.map((drug: Drug) => (
+            <ListItem key={drug.id}>
               <Body>
-                <WebView
-                  style={{
-                    flex: 1,
-                    width: 300,
-                    height: 100,
-                    borderWidth: 1,
-                    borderColor: 'red',
-                  }}
-                  originWhitelist={['*']}
-                  textZoom={300}
-                  source={{html: results[0].contents}}
-                />
+                <Text>{drug.title}</Text>
+                <Text note>{drug.section}</Text>
               </Body>
-            </CardItem>
-          </Card>
-        )}
+            </ListItem>
+          ))}
+        </List>
       </Content>
     </Container>
   );
