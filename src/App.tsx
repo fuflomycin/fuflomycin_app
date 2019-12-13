@@ -78,7 +78,6 @@ const App = () => {
         <Form style={{flex: 1}}>
           <Item>
             <Icon name="search" />
-
             <Input value={prompt} onChangeText={setPrompt} ref={searchRef} />
             <Badge style={{backgroundColor: 'transparent'}}>
               <Text style={{color: '#aaa'}}>{drugs.length}</Text>
@@ -89,11 +88,11 @@ const App = () => {
       <Content padder>
         <List>
           {results.map((drug: Drug) => (
-            <ListItem key={drug.id}>
-              <Body>
+            <ListItem noIndent key={drug.id}>
+              <View>
                 <Text>{drug.title}</Text>
                 <Text note>{drug.section}</Text>
-              </Body>
+              </View>
             </ListItem>
           ))}
         </List>
