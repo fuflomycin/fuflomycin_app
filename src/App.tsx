@@ -28,7 +28,7 @@ import Drug from './Drug';
 const App = () => {
   // drugs sourse
   const homeopathyUrl = `https://fuflomycin.github.io/fuflomycin/homeopathy.json`;
-  const assetsUrl = 'https://fuflomycin.github.io/fuflomycin/homeopathy/';
+  const rspUrl = 'https://fuflomycin.github.io/fuflomycin/rsp.json';
 
   // all drugs
   const [drugs, setDrugs] = useState<Drug[]>([]);
@@ -52,25 +52,38 @@ const App = () => {
    * Load all drugs from github
    */
   useEffect(() => {
-    fetch(homeopathyUrl)
-      .then(response => response.json())
-      .then(data => {
-        let result = [];
-        for (let i in data) result.push({i, ...data[i]});
-        setDrugs(result);
-        setResults(result);
-        setPrompt('');
-      });
-  }, []);
+    // console.log('First start');
+    (async () => {
+      // homeopathy
+      const homeopathyRaw = await fetch(homeopathyUrl);
+      const homeopathy = await homeopathyRaw.json();
 
-  /**
-   * filter results when changed prompt
-   */
-  useEffect(() => {
-    setResults(
-      drugs.filter(i => i.title.toLowerCase().includes(prompt.toLowerCase())),
-    );
-  }, [prompt]);
+      const rspRaw = await fetch(rspUrl);
+      const rsp = await rspRaw.json();
+
+      let result = [];
+      for (let i in homeopathy) result.push({i, ...homeopathy[i]});
+      for (let i in rsp) result.push({i, ...rsp[i]});
+
+      //
+      for (let i in result)
+        result[i].title = result[i].title.toLocaleUpperCase();
+
+      // console.log(result);
+
+      //
+      result.sort((a: Drug, b: Drug) => {
+        if (a.title > b.title) return 1;
+        if (a.title < b.title) return -1;
+        return 0;
+      });
+
+      //
+      setDrugs([...result]);
+      setResults([...result]);
+      setPrompt('');
+    })();
+  }, []);
 
   return (
     <Container>
@@ -78,9 +91,17 @@ const App = () => {
         <Form style={{flex: 1}}>
           <Item>
             <Icon name="search" />
-            <Input value={prompt} onChangeText={setPrompt} ref={searchRef} />
+            <Input
+              value={prompt}
+              onChangeText={newPrompt => {
+                const p = newPrompt.toLocaleUpperCase();
+                setResults([...drugs.filter(i => i.title.includes(p))]);
+                setPrompt(newPrompt);
+              }}
+              ref={searchRef}
+            />
             <Badge style={{backgroundColor: 'transparent'}}>
-              <Text style={{color: '#aaa'}}>{drugs.length}</Text>
+              <Text style={{color: '#aaa'}}>{results.length}</Text>
             </Badge>
           </Item>
         </Form>
@@ -91,7 +112,9 @@ const App = () => {
             <ListItem noIndent key={drug.id}>
               <View>
                 <Text>{drug.title}</Text>
-                <Text note>{drug.section}</Text>
+                <Text note style={{color: drug.label}}>
+                  {drug.section}
+                </Text>
               </View>
             </ListItem>
           ))}
