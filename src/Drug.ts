@@ -9,8 +9,9 @@ interface Drug {
   other?: string[];
   producer?: string;
   source?: string;
-  label: 'red' | 'yellow' | 'green' | 'gray';
+  label: 'red' | 'orange' | 'gold' | 'green' | 'gray';
   contents: string;
+  index: string;
 }
 
 export default Drug;
