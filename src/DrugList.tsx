@@ -24,7 +24,13 @@ import {
 import {WebView} from 'react-native-webview';
 
 import Drug from './Drug';
+import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
+import {SafeAreaView, ScrollView} from 'react-navigation';
+import {TextInput, Image, StatusBar} from 'react-native';
 
+/**
+ *
+ */
 const DrugList = () => {
   // drugs sourse
   const homeopathyUrl = `https://fuflomycin.github.io/fuflomycin/homeopathy.json`;
@@ -43,6 +49,11 @@ const DrugList = () => {
    *
    */
   const searchRef = useRef(null);
+
+  /**
+   * Navigation
+   */
+  const {navigate} = useNavigation();
 
   /* useEffect(() => {
     searchRef.current.focus();
@@ -91,30 +102,39 @@ const DrugList = () => {
   }, []);
 
   return (
-    <Container>
-      <Header transparent>
-        <Form style={{flex: 1}}>
-          <Item>
-            <Icon name="search" />
-            <Input
-              value={prompt}
-              onChangeText={newPrompt => {
-                const p = newPrompt.toLocaleUpperCase();
-                setResults([...drugs.filter(i => i.index.includes(p))]);
-                setPrompt(newPrompt);
-              }}
-              ref={searchRef}
-            />
-            <Badge style={{backgroundColor: 'transparent'}}>
-              <Text style={{color: '#aaa'}}>{results.length}</Text>
-            </Badge>
-          </Item>
-        </Form>
-      </Header>
-      <Content>
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar backgroundColor="#900" barStyle="light-content" />
+      <View
+        style={{
+          height: 50,
+          backgroundColor: 'silver',
+          padding: 10,
+          flexDirection: 'row',
+        }}>
+        <Image
+          style={{width: 20, height: 20}}
+          source={require('./search.png')}
+        />
+        <TextInput
+          style={{borderColor: 'gray', borderWidth: 1, flex: 1}}
+          value={prompt}
+          onChangeText={newPrompt => {
+            const p = newPrompt.toLocaleUpperCase();
+            setResults([...drugs.filter(i => i.index.includes(p))]);
+            setPrompt(newPrompt);
+          }}
+        />
+      </View>
+      <ScrollView>
         <List>
           {results.map((drug: Drug) => (
-            <ListItem noIndent key={drug.id}>
+            <ListItem
+              noIndent
+              key={drug.id}
+              onPress={() => {
+                console.log('Go to drug', drug.id);
+                navigate('DrugItem', {drug});
+              }}>
               <View style={{flex: 1}}>
                 <View
                   style={{
@@ -136,8 +156,8 @@ const DrugList = () => {
             </ListItem>
           ))}
         </List>
-      </Content>
-    </Container>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
