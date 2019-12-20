@@ -1,53 +1,47 @@
-import React, {useState, useEffect} from 'react';
-import {
-  Container,
-  Header,
-  Left,
-  Body,
-  Title,
-  Content,
-  Button,
-  Icon,
-  Text,
-  Right,
-} from 'native-base';
+import React from 'react';
 
 import Drug from './Drug';
-import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
+import {useNavigation} from 'react-navigation-hooks';
+import {
+  SafeAreaView,
+  StatusBar,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DrugItem = () => {
-  const {goBack} = useNavigation();
+  //
+  const {navigate, getParam} = useNavigation();
 
-  const drug: Drug = useNavigationParam('drug');
+  //
+  const drug: Drug = getParam('drug');
 
   //
   return (
-    <Container>
-      <Header>
-        <Left>
-          <Button
-            transparent
-            onPress={() => {
-              console.log('Back');
-              goBack(null);
-            }}>
-            <Icon
-              name="arrow-back"
-              type="MaterialIcons"
-              android="arrow-back"
-              ios="ios-arrow-back"
-            />
-          </Button>
-        </Left>
-        <Body>
-          <Title>{drug.title}</Title>
-        </Body>
-        <Right />
-      </Header>
-      <Content>
-        <Text>{drug.title}</Text>
-      </Content>
-    </Container>
+    <SafeAreaView>
+      <StatusBar backgroundColor="#900" barStyle="light-content" />
+      <View
+        style={{
+          height: 50,
+          backgroundColor: 'silver',
+          padding: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+          onPress={() => {
+            navigate('DrugList');
+          }}>
+          <Icon name="arrow-left" size={24} color="#900" />
+        </TouchableOpacity>
+
+        <Text style={{marginLeft: 10, fontSize: 14}}>{drug.title}</Text>
+      </View>
+    </SafeAreaView>
   );
 };
 

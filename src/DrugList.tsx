@@ -1,32 +1,48 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  Container,
-  Title,
-  Header,
-  Content,
-  Form,
-  Item,
-  Input,
-  Icon,
-  Body,
-  Subtitle,
-  List,
-  Text,
-  ListItem,
-  Right,
-  View,
-  Card,
-  CardItem,
-  Left,
-  Badge,
-  Thumbnail,
-} from 'native-base';
 import {WebView} from 'react-native-webview';
 
 import Drug from './Drug';
-import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
-import {SafeAreaView, ScrollView} from 'react-navigation';
-import {TextInput, Image, StatusBar} from 'react-native';
+import {useNavigation} from 'react-navigation-hooks';
+import {SafeAreaView, ScrollView, NavigationEvents} from 'react-navigation';
+
+import {
+  TextInput,
+  StatusBar,
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const Item: React.FC<{drug: Drug}> = ({drug}) => {
+  /**
+   * Navigation
+   */
+  const {navigate} = useNavigation();
+
+  //
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        navigate('DrugItem', {drug});
+      }}>
+      <View
+        style={{
+          padding: 10,
+          borderBottomColor: 'silver',
+          borderBottomWidth: 1,
+          borderLeftColor: drug.label,
+          borderLeftWidth: 3,
+        }}>
+        <Text style={{fontSize: 14}}>{drug.title}</Text>
+        {drug.other && drug.other?.length > 0 && (
+          <Text style={{color: 'gray'}}>{drug.other}</Text>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 /**
  *
@@ -49,11 +65,6 @@ const DrugList = () => {
    *
    */
   const searchRef = useRef(null);
-
-  /**
-   * Navigation
-   */
-  const {navigate} = useNavigation();
 
   /* useEffect(() => {
     searchRef.current.focus();
@@ -110,13 +121,17 @@ const DrugList = () => {
           backgroundColor: 'silver',
           padding: 10,
           flexDirection: 'row',
+          alignItems: 'center',
         }}>
-        <Image
-          style={{width: 20, height: 20}}
-          source={require('./search.png')}
-        />
+        <Icon name="magnify" size={30} color="#900" />
         <TextInput
-          style={{borderColor: 'gray', borderWidth: 1, flex: 1}}
+          style={{
+            borderColor: 'gray',
+            borderWidth: 1,
+            flex: 1,
+            backgroundColor: '#fff',
+            marginLeft: 10,
+          }}
           value={prompt}
           onChangeText={newPrompt => {
             const p = newPrompt.toLocaleUpperCase();
@@ -126,36 +141,11 @@ const DrugList = () => {
         />
       </View>
       <ScrollView>
-        <List>
-          {results.map((drug: Drug) => (
-            <ListItem
-              noIndent
-              key={drug.id}
-              onPress={() => {
-                console.log('Go to drug', drug.id);
-                navigate('DrugItem', {drug});
-              }}>
-              <View style={{flex: 1}}>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text>{drug.title}</Text>
-                  <Text style={{color: drug.label}} note>
-                    {drug.section}
-                  </Text>
-                </View>
-                {drug && drug.other && drug.other.length > 0 && (
-                  <View>
-                    <Text note>{drug.other?.join(', ')}</Text>
-                  </View>
-                )}
-              </View>
-            </ListItem>
-          ))}
-        </List>
+        <FlatList
+          data={results}
+          renderItem={({item}) => <Item drug={item} />}
+          keyExtractor={item => item.id}
+        />
       </ScrollView>
     </SafeAreaView>
   );

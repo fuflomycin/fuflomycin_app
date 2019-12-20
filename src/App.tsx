@@ -1,16 +1,15 @@
 import React from 'react';
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 
 import DrugList from './DrugList';
 import DrugItem from './DrugItem';
 
-const AppNavigator = createStackNavigator(
+const AppNavigator = createSwitchNavigator(
   {
     DrugList: {screen: DrugList},
     DrugItem: {screen: DrugItem},
   },
-  {headerMode: 'none'},
+  {initialRouteName: 'DrugList'},
 );
 
 export default createAppContainer(AppNavigator);
