@@ -114,23 +114,28 @@ const DrugList = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar backgroundColor="#900" barStyle="light-content" />
+      <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
       <View
         style={{
           height: 50,
-          backgroundColor: 'silver',
+          backgroundColor: '#ff5959',
           padding: 10,
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        <Icon name="magnify" size={30} color="#900" />
+        <Icon name="magnify" size={30} color="#fff" />
         <TextInput
           style={{
-            borderColor: 'gray',
+            borderColor: '#ef4949',
             borderWidth: 1,
             flex: 1,
             backgroundColor: '#fff',
             marginLeft: 10,
+            borderRadius: 3,
+            paddingLeft: 8,
+            paddingRight: 8,
+            paddingTop: 3,
+            paddingBottom: 3,
           }}
           value={prompt}
           onChangeText={newPrompt => {
@@ -140,13 +145,13 @@ const DrugList = () => {
           }}
         />
       </View>
-      <ScrollView>
+      <View>
         <FlatList
           data={results}
           renderItem={({item}) => <Item drug={item} />}
           keyExtractor={item => item.id}
         />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
