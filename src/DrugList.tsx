@@ -1,9 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {WebView} from 'react-native-webview';
-
-import Drug from './Drug';
 import {useNavigation} from 'react-navigation-hooks';
-import {SafeAreaView, ScrollView, NavigationEvents} from 'react-navigation';
+import {SafeAreaView} from 'react-navigation';
 
 import {
   TextInput,
@@ -12,8 +9,17 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import {
+  getDataFromStorage,
+  getDataFromGithub,
+  saveDataToStorage,
+  Drug,
+} from './db';
 
 const Item: React.FC<{drug: Drug}> = ({drug}) => {
   /**
@@ -61,6 +67,12 @@ const DrugList = () => {
   // filtered drugs results
   const [results, setResults] = useState<Drug[]>([]);
 
+  // loading
+  const [loading, setLoading] = useState(true);
+
+  //
+  const {navigate} = useNavigation();
+
   /**
    *
    */
@@ -74,41 +86,30 @@ const DrugList = () => {
    * Load all drugs from github
    */
   useEffect(() => {
-    // console.log('First start');
+    console.log('First start');
+
     (async () => {
-      // homeopathy
-      const homeopathyRaw = await fetch(homeopathyUrl);
-      const homeopathy = await homeopathyRaw.json();
-
-      const rspRaw = await fetch(rspUrl);
-      const rsp = await rspRaw.json();
-
-      let result = [];
-      for (let i in homeopathy) result.push({i, ...homeopathy[i]});
-      for (let i in rsp) result.push({i, ...rsp[i]});
-
       //
-      for (let i in result) {
-        result[i].index = (
-          result[i].title +
-          ', ' +
-          result[i].other.join(', ')
-        ).toLocaleUpperCase();
+      const storedDrugs = await getDataFromStorage();
+      console.log('Stored drugs', storedDrugs);
+      if (storedDrugs) {
+        // drugs found in async storage
+        setDrugs([...storedDrugs]);
+        setResults([...storedDrugs]);
+        // setPrompt('');
+        setLoading(false);
       }
 
-      // console.log(result);
-
-      //
-      result.sort((a: Drug, b: Drug) => {
-        if (a.title > b.title) return 1;
-        if (a.title < b.title) return -1;
-        return 0;
-      });
-
-      //
-      setDrugs([...result]);
-      setResults([...result]);
-      setPrompt('');
+      const loadedDrugs = await getDataFromGithub();
+      console.log('Loaded drugs', loadedDrugs);
+      if (loadedDrugs) {
+        setDrugs([...loadedDrugs]);
+        if (prompt === '') {
+          setResults([...loadedDrugs]);
+          setLoading(false);
+        }
+        await saveDataToStorage(loadedDrugs);
+      }
     })();
   }, []);
 
@@ -123,7 +124,15 @@ const DrugList = () => {
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        <Icon name="magnify" size={30} color="#fff" />
+        {loading ? (
+          <ActivityIndicator size={30} color="#fff" />
+        ) : (
+          <View>
+            <Icon name="magnify" size={24} color="#fff" />
+            <Text style={{color: '#fff', fontSize: 10}}>{results.length}</Text>
+          </View>
+        )}
+
         <TextInput
           style={{
             borderColor: '#ef4949',
@@ -131,6 +140,7 @@ const DrugList = () => {
             flex: 1,
             backgroundColor: '#fff',
             marginLeft: 10,
+            marginRight: 10,
             borderRadius: 3,
             paddingLeft: 8,
             paddingRight: 8,
@@ -144,6 +154,12 @@ const DrugList = () => {
             setPrompt(newPrompt);
           }}
         />
+        <TouchableOpacity
+          onPress={() => {
+            navigate('DrugInfo');
+          }}>
+          <Icon name="information-outline" size={30} color="#fff" />
+        </TouchableOpacity>
       </View>
       <View>
         <FlatList
