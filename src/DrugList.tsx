@@ -35,16 +35,23 @@ const Item: React.FC<{drug: Drug}> = ({drug}) => {
       }}>
       <View
         style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           padding: 10,
           borderBottomColor: 'silver',
           borderBottomWidth: 1,
-          borderLeftColor: drug.label,
-          borderLeftWidth: 3,
         }}>
-        <Text style={{fontSize: 14}}>{drug.title}</Text>
-        {drug.other && drug.other?.length > 0 && (
-          <Text style={{color: 'gray'}}>{drug.other}</Text>
-        )}
+        <View style={{flex: 15}}>
+          <Text style={{fontSize: 14}}>{drug.title}</Text>
+          {drug.otherstr ? (
+            <Text style={{color: 'gray'}}>{drug.otherstr}</Text>
+          ) : null}
+        </View>
+        <View style={{flex: 1}}>
+          <Icon name="chevron-right" size={24} color="#ff5959" />
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -74,15 +81,6 @@ const DrugList = () => {
   const {navigate} = useNavigation();
 
   /**
-   *
-   */
-  const searchRef = useRef(null);
-
-  /* useEffect(() => {
-    searchRef.current.focus();
-  }, []); */
-
-  /**
    * Load all drugs from github
    */
   useEffect(() => {
@@ -91,7 +89,7 @@ const DrugList = () => {
     (async () => {
       //
       const storedDrugs = await getDataFromStorage();
-      console.log('Stored drugs', storedDrugs);
+      // console.log('Stored drugs', storedDrugs);
       if (storedDrugs) {
         // drugs found in async storage
         setDrugs([...storedDrugs]);
@@ -101,7 +99,7 @@ const DrugList = () => {
       }
 
       const loadedDrugs = await getDataFromGithub();
-      console.log('Loaded drugs', loadedDrugs);
+      // console.log('Loaded drugs', loadedDrugs);
       if (loadedDrugs) {
         setDrugs([...loadedDrugs]);
         if (prompt === '') {
@@ -118,7 +116,6 @@ const DrugList = () => {
       <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
       <View
         style={{
-          height: 50,
           backgroundColor: '#ff5959',
           padding: 10,
           flexDirection: 'row',
@@ -161,13 +158,12 @@ const DrugList = () => {
           <Icon name="information-outline" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
-      <View>
-        <FlatList
-          data={results}
-          renderItem={({item}) => <Item drug={item} />}
-          keyExtractor={item => item.id}
-        />
-      </View>
+      <FlatList
+        data={results}
+        renderItem={({item}) => <Item drug={item} />}
+        keyExtractor={item => item.id}
+        keyboardShouldPersistTaps="always"
+      />
     </SafeAreaView>
   );
 };

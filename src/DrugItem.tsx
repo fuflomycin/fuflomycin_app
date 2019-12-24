@@ -21,7 +21,7 @@ const assets = 'https://fuflomycin.github.io/fuflomycin/img/';
 
 const DrugItem = () => {
   //
-  const {navigate, getParam} = useNavigation();
+  const {navigate, getParam, goBack} = useNavigation();
 
   //
   const drug: Drug = getParam('drug');
@@ -31,7 +31,7 @@ const DrugItem = () => {
 
   //
   return (
-    <SafeAreaView style={{backgroundColor: '#fff'}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* Статус бар */}
       <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
 
@@ -46,9 +46,10 @@ const DrugItem = () => {
         }}>
         <TouchableOpacity
           onPress={() => {
+            // goBack();
             navigate('DrugList');
           }}>
-          <Icon name="arrow-left" size={30} color="#fff" />
+          <Icon name="chevron-left" size={30} color="#fff" />
         </TouchableOpacity>
 
         <Text
@@ -109,7 +110,7 @@ const DrugItem = () => {
           <WebView
             style={{width: width - 20, height: 300}}
             originWhitelist={['*']}
-            textZoom={280}
+            textZoom={width / 1.5}
             source={{
               html: drug.contents,
             }}

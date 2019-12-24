@@ -7,17 +7,19 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Button,
+  Linking,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DrugInfo = () => {
   //
-  const {navigate, getParam} = useNavigation();
+  const {goBack, navigate} = useNavigation();
 
   //
   return (
-    <SafeAreaView style={{backgroundColor: '#fff'}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* Статус бар */}
       <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
 
@@ -32,9 +34,11 @@ const DrugInfo = () => {
         }}>
         <TouchableOpacity
           onPress={() => {
-            navigate('DrugList');
+            //navigate('DrugList');
+            const result = goBack();
+            console.log('navigate druglist', result);
           }}>
-          <Icon name="arrow-left" size={30} color="#fff" />
+          <Icon name="chevron-left" size={30} color="#fff" />
         </TouchableOpacity>
 
         <Text
@@ -59,12 +63,23 @@ const DrugInfo = () => {
         <Text style={{marginBottom: 10, color: 'red'}}>
           - гомеопатических препаратов
         </Text>
-        <Text>
+        <Text style={{marginBottom: 10}}>
           Список сформирован на основе отсутствия убедительных данных об
           эффективности препаратов по заявленным показаниям, как того требует
           доказательная медицина, а так же по отсутствию в авторитетных
           источниках и рекомендациях.
         </Text>
+        <Text style={{marginBottom: 10}}>
+          Исходный код программы и базы препаратов доступен на Github
+        </Text>
+        <View style={{margin: 20}}>
+          <Button
+            title="Github"
+            onPress={() => {
+              Linking.openURL('https://github.com/fuflomycin');
+            }}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
