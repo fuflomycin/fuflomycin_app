@@ -54,6 +54,7 @@ const DrugItem = () => {
 
         <Text
           style={{
+            flex: 1,
             marginLeft: 10,
             fontSize: 18,
             fontWeight: 'bold',
@@ -74,9 +75,24 @@ const DrugItem = () => {
         )}
 
         {/* Название */}
-        <Text style={{fontSize: 16, fontWeight: 'bold', padding: 10}}>
-          {drug.title}
-        </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={{fontSize: 16, fontWeight: 'bold', padding: 10, flex: 1}}>
+            {drug.title}
+          </Text>
+          {drug.source && (
+            <TouchableOpacity
+              onPress={() => {
+                // goBack();
+                if (drug.source) {
+                  Linking.openURL(drug.source);
+                }
+              }}
+              style={{marginEnd: 10}}>
+              <Icon name="link" size={30} color="#5959ff" />
+            </TouchableOpacity>
+          )}
+        </View>
 
         {// Другие названия
         drug.other && drug.other.length > 0 && (

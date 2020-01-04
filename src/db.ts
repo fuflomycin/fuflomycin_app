@@ -40,7 +40,15 @@ export const getDataFromStorage = async (
     const drugs = await AsyncStorage.getItem(key);
     if (drugs !== null) {
       // console.log('Data getted', drugs);
-      return JSON.parse(drugs);
+      const result = JSON.parse(drugs);
+      result.sort((a: Drug, b: Drug) => {
+        if (a.title.toLocaleUpperCase() > b.title.toLocaleUpperCase()) return 1;
+        if (a.title.toLocaleUpperCase() < b.title.toLocaleUpperCase())
+          return -1;
+        return 0;
+      });
+
+      return result;
     } else {
       console.log('No drugs in async storage');
       return null;
@@ -93,6 +101,7 @@ export const getDataFromGithub = async (): Promise<Drug[] | null> => {
   const HOMEOPATHY_URL =
     'https://fuflomycin.github.io/fuflomycin/homeopathy.json';
   const RSP_URL = 'https://fuflomycin.github.io/fuflomycin/rsp.json';
+  const FK_URL = 'https://fuflomycin.github.io/fuflomycin/fk.json';
 
   console.log('Try get data fron Github...');
   let result: Drug[] = [];
@@ -104,6 +113,10 @@ export const getDataFromGithub = async (): Promise<Drug[] | null> => {
   const rawRsp = await fetch(RSP_URL);
   const rsp = await rawRsp.json();
   for (let i in rsp) result.push({i, ...rsp[i]});
+
+  const rawFk = await fetch(FK_URL);
+  const fk = await rawFk.json();
+  for (let i in fk) result.push({i, ...fk[i]});
 
   // console.log(...tmp);
 
@@ -121,8 +134,8 @@ export const getDataFromGithub = async (): Promise<Drug[] | null> => {
 
   //
   result.sort((a: Drug, b: Drug) => {
-    if (a.title > b.title) return 1;
-    if (a.title < b.title) return -1;
+    if (a.title.toLocaleUpperCase() > b.title.toLocaleUpperCase()) return 1;
+    if (a.title.toLocaleUpperCase() < b.title.toLocaleUpperCase()) return -1;
     return 0;
   });
 
