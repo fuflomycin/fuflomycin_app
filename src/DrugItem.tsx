@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {useNavigation} from 'react-navigation-hooks';
 import {
   SafeAreaView,
@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import WebView from 'react-native-webview';
 import {Drug} from './db';
-import DrugList from './DrugList';
+
+import AutoHeightWebView from 'react-native-autoheight-webview';
 
 const assets = 'https://fuflomycin.github.io/fuflomycin/img/';
 
@@ -123,7 +123,8 @@ const DrugItem = () => {
             </Text>
           </View>
 
-          <WebView
+          {/* Контент */}
+          {/* <WebView
             style={{width: width - 20, height: 300}}
             originWhitelist={['*']}
             textZoom={width / 1.5}
@@ -134,6 +135,17 @@ const DrugItem = () => {
               Linking.openURL(req.url);
               return false;
             }}
+          /> */}
+          <AutoHeightWebView
+            style={{width: width - 20}}
+            source={{html: drug.contents}}
+            scalesPageToFit={true}
+            viewportContent={'width=device-width, user-scalable=no'}
+            onShouldStartLoadWithRequest={req => {
+              Linking.openURL(req.url);
+              return false;
+            }}
+            originWhitelist={['*']}
           />
         </View>
       </ScrollView>
