@@ -31,6 +31,7 @@ const DrugItem = () => {
 
   //
   return (
+    <View style={{backgroundColor: '#ff5959', flex: 1}}>
     <SafeAreaView style={{flex: 1}}>
       {/* Статус бар */}
       <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
@@ -65,6 +66,7 @@ const DrugItem = () => {
       </View>
 
       {/* Контент */}
+      <View style={{backgroundColor: '#fff', flex: 1}}>
       <ScrollView>
         {// Фото
         drug.photo && (
@@ -141,15 +143,20 @@ const DrugItem = () => {
             source={{html: drug.contents}}
             scalesPageToFit={true}
             viewportContent={'width=device-width, user-scalable=no'}
-            onShouldStartLoadWithRequest={req => {
-              Linking.openURL(req.url);
-              return false;
+            onShouldStartLoadWithRequest={event => {
+              if (event.url.slice(0,4) === 'http') {
+                Linking.openURL(event.url)
+                return false
+              }
+              return true
             }}
             originWhitelist={['*']}
           />
         </View>
       </ScrollView>
+      </View>
     </SafeAreaView>
+    </View>
   );
 };
 

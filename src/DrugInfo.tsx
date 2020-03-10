@@ -19,6 +19,7 @@ const DrugInfo = () => {
 
   //
   return (
+    <View style={{backgroundColor: '#ff5959', flex: 1}}>
     <SafeAreaView style={{flex: 1}}>
       {/* Статус бар */}
       <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
@@ -53,7 +54,7 @@ const DrugInfo = () => {
       </View>
 
       {/* Контент */}
-      <ScrollView style={{padding: 10}}>
+      <ScrollView style={{}} contentContainerStyle={{backgroundColor:'#fff', padding: 10}}>
         <Text style={{fontSize: 18, fontWeight: 'bold'}}>О программе</Text>
         <Text>Справочник содержит неполный список "фуфломицинов":</Text>
         <Text style={{color: 'orange'}}>
@@ -118,6 +119,7 @@ const DrugInfo = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </View>
   );
 };
 

@@ -111,7 +111,7 @@ const DrugList = () => {
     })();
   }, []);
 
-  return (
+  return (<View style={{backgroundColor: '#ff5959', flex: 1}}>
     <SafeAreaView style={{flex: 1}}>
       <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
       <View
@@ -163,8 +163,10 @@ const DrugList = () => {
         renderItem={({item}) => <Item drug={item} />}
         keyExtractor={item => item.id}
         keyboardShouldPersistTaps="always"
+        contentContainerStyle={{backgroundColor: '#fff'}}
       />
     </SafeAreaView>
+    </View>
   );
 };
 
