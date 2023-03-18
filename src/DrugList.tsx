@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useNavigation} from 'react-navigation-hooks';
 import {SafeAreaView} from 'react-navigation';
 
@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,28 +22,15 @@ import {
   Drug,
 } from './db';
 
-const Item: React.FC<{drug: Drug}> = ({drug}) => {
-  /**
-   * Navigation
-   */
+const Item = ({drug}: Drug) => {
   const {navigate} = useNavigation();
+
+  const handleItem = useCallback(() => navigate('DrugItem', {drug}), []);
 
   //
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigate('DrugItem', {drug});
-      }}>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: 10,
-          borderBottomColor: 'silver',
-          borderBottomWidth: 1,
-        }}>
+    <TouchableOpacity onPress={handleItem}>
+      <View style={itemStyles.item}>
         <View style={{flex: 15}}>
           <Text style={{fontSize: 14}}>{drug.title}</Text>
           {drug.otherstr ? (
@@ -56,6 +44,18 @@ const Item: React.FC<{drug: Drug}> = ({drug}) => {
     </TouchableOpacity>
   );
 };
+
+const itemStyles = StyleSheet.create({
+  item: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomColor: 'silver',
+    borderBottomWidth: 1,
+  },
+});
 
 /**
  *
@@ -84,17 +84,13 @@ const DrugList = () => {
    * Load all drugs from github
    */
   useEffect(() => {
-    console.log('First start');
-
     (async () => {
       //
       const storedDrugs = await getDataFromStorage();
-      // console.log('Stored drugs', storedDrugs);
       if (storedDrugs) {
         // drugs found in async storage
         setDrugs([...storedDrugs]);
         setResults([...storedDrugs]);
-        // setPrompt('');
         setLoading(false);
       }
 
@@ -111,63 +107,74 @@ const DrugList = () => {
     })();
   }, []);
 
-  return (<View style={{backgroundColor: '#ff5959', flex: 1}}>
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
-      <View
-        style={{
-          backgroundColor: '#ff5959',
-          padding: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        {loading ? (
-          <ActivityIndicator size={30} color="#fff" />
-        ) : (
-          <View>
-            <Icon name="magnify" size={24} color="#fff" />
-            <Text style={{color: '#fff', fontSize: 10}}>{results.length}</Text>
-          </View>
-        )}
+  const handleInfo = useCallback(() => {
+    navigate('DrugInfo');
+  }, []);
 
-        <TextInput
-          style={{
-            borderColor: '#ef4949',
-            borderWidth: 1,
-            flex: 1,
-            backgroundColor: '#fff',
-            marginLeft: 10,
-            marginRight: 10,
-            borderRadius: 3,
-            paddingLeft: 8,
-            paddingRight: 8,
-            paddingTop: 3,
-            paddingBottom: 3,
-          }}
-          value={prompt}
-          onChangeText={newPrompt => {
-            const p = newPrompt.toLocaleUpperCase();
-            setResults([...drugs.filter(i => i.index.includes(p))]);
-            setPrompt(newPrompt);
-          }}
+  const handleInput = useCallback((newPrompt) => {
+    const p = newPrompt.toLocaleUpperCase();
+    setResults([...drugs.filter((i) => i.index.includes(p))]);
+    setPrompt(newPrompt);
+  }, []);
+
+  return (
+    <View style={styles.base}>
+      <SafeAreaView style={{flex: 1}}>
+        <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
+        <View style={styles.panel}>
+          {loading ? (
+            <ActivityIndicator size={30} color="#fff" />
+          ) : (
+            <View>
+              <Icon name="magnify" size={24} color="#fff" />
+              <Text style={{color: '#fff', fontSize: 10}}>
+                {results.length}
+              </Text>
+            </View>
+          )}
+
+          <TextInput
+            style={styles.prompt}
+            value={prompt}
+            onChangeText={handleInput}
+          />
+          <TouchableOpacity onPress={handleInfo}>
+            <Icon name="information-outline" size={30} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={results}
+          renderItem={({item}) => <Item drug={item} />}
+          keyExtractor={(item) => item.id}
+          keyboardShouldPersistTaps="always"
+          contentContainerStyle={{backgroundColor: '#fff'}}
         />
-        <TouchableOpacity
-          onPress={() => {
-            navigate('DrugInfo');
-          }}>
-          <Icon name="information-outline" size={30} color="#fff" />
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        data={results}
-        renderItem={({item}) => <Item drug={item} />}
-        keyExtractor={item => item.id}
-        keyboardShouldPersistTaps="always"
-        contentContainerStyle={{backgroundColor: '#fff'}}
-      />
-    </SafeAreaView>
+      </SafeAreaView>
     </View>
   );
 };
 
 export default DrugList;
+
+const styles = StyleSheet.create({
+  base: {backgroundColor: '#ff5959', flex: 1},
+  panel: {
+    backgroundColor: '#ff5959',
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  prompt: {
+    borderColor: '#ef4949',
+    borderWidth: 1,
+    flex: 1,
+    backgroundColor: '#fff',
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 3,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 3,
+    paddingBottom: 3,
+  },
+});

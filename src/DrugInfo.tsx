@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useNavigation} from 'react-navigation-hooks';
 import {
   SafeAreaView,
@@ -9,53 +9,34 @@ import {
   ScrollView,
   Button,
   Linking,
+  StyleSheet,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DrugInfo = () => {
-  //
   const {goBack, navigate} = useNavigation();
+
+  const handleBack = useCallback(() => goBack(), []);
 
   //
   return (
-    <View style={{backgroundColor: '#ff5959', flex: 1}}>
-      <SafeAreaView style={{flex: 1}}>
+    <View style={styles.base}>
+      <SafeAreaView style={styles.safeArea}>
         {/* Статус бар */}
         <StatusBar backgroundColor="#ff5959" barStyle="light-content" />
 
         {/* Верхняя панель */}
-        <View
-          style={{
-            height: 50,
-            backgroundColor: '#ff5959',
-            padding: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              //navigate('DrugList');
-              const result = goBack();
-              console.log('navigate druglist', result);
-            }}>
+        <View style={styles.panel}>
+          <TouchableOpacity onPress={handleBack}>
             <Icon name="chevron-left" size={30} color="#fff" />
           </TouchableOpacity>
 
-          <Text
-            style={{
-              marginLeft: 10,
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: '#fff',
-            }}>
-            О программе
-          </Text>
+          <Text style={styles.panelLabel}>О программе</Text>
         </View>
 
         {/* Контент */}
         <ScrollView
-          style={{}}
           contentContainerStyle={{backgroundColor: '#fff', padding: 10}}>
           <Text style={{fontSize: 18, fontWeight: 'bold'}}>О программе</Text>
 
@@ -65,10 +46,8 @@ const DrugInfo = () => {
           </Text>
           <View style={{margin: 10}}>
             <Button
-              title="Github"
-              onPress={() => {
-                Linking.openURL('https://github.com/fuflomycin');
-              }}
+              title="Исходники"
+              onPress={() => Linking.openURL('https://github.com/fuflomycin')}
             />
           </View>
 
@@ -76,10 +55,8 @@ const DrugInfo = () => {
           <Text style={{marginTop: 20}}>Поддержать развитие приложения:</Text>
           <View style={{margin: 10}}>
             <Button
-              title="Спасибо"
-              onPress={() => {
-                Linking.openURL('https://boosty.to/bndby');
-              }}
+              title="Поддержать"
+              onPress={() => Linking.openURL('https://boosty.to/bndby')}
             />
           </View>
 
@@ -146,3 +123,21 @@ const DrugInfo = () => {
 };
 
 export default DrugInfo;
+
+const styles = StyleSheet.create({
+  base: {backgroundColor: '#ff5959', flex: 1},
+  safeArea: {flex: 1},
+  panel: {
+    height: 50,
+    backgroundColor: '#ff5959',
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  panelLabel: {
+    marginLeft: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+});

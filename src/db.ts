@@ -8,6 +8,7 @@ export interface Drug {
   section?: string; // drug section
   title: string; // main name
   photo?: string; // photo filename
+  gallery?: string[]; // photos fienames
   other?: string[]; // other names
   producer?: string; // producer of drug
   source?: string; // source with info
@@ -35,7 +36,7 @@ const STORAGE_KEY = '@drugs';
 export const getDataFromStorage = async (
   key: string = STORAGE_KEY,
 ): Promise<Drug[] | null> => {
-  console.log('Try get data from storage...');
+  // console.log('Try get data from storage...');
   try {
     const drugs = await AsyncStorage.getItem(key);
     if (drugs !== null) {
@@ -50,12 +51,12 @@ export const getDataFromStorage = async (
 
       return result;
     } else {
-      console.log('No drugs in async storage');
+      // console.log('No drugs in async storage');
       return null;
     }
   } catch (e) {
     // error reading value
-    console.log('Async storage error');
+    // console.log('Async storage error');
     return null;
   }
 };
@@ -75,13 +76,13 @@ export const saveDataToStorage = async (
   data: Drug[] = [],
   key: string = STORAGE_KEY,
 ): Promise<boolean> => {
-  console.log('Try save data to storage...');
+  // console.log('Try save data to storage...');
   try {
     await AsyncStorage.setItem(key, JSON.stringify(data));
-    console.log('Saved');
+    // console.log('Saved');
     return true;
   } catch (e) {
-    console.log('Saving error');
+    // console.log('Saving error');
     return false;
   }
 };
@@ -103,7 +104,7 @@ export const getDataFromGithub = async (): Promise<Drug[] | null> => {
   const RSP_URL = 'https://fuflomycin.github.io/fuflomycin/rsp.json';
   const FK_URL = 'https://fuflomycin.github.io/fuflomycin/fk.json';
 
-  console.log('Try get data fron Github...');
+  // console.log('Try get data fron Github...');
   let result: Drug[] = [];
 
   const rawHomeopathy = await fetch(HOMEOPATHY_URL);
