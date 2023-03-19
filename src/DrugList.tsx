@@ -111,11 +111,11 @@ const DrugList = () => {
     navigate('DrugInfo');
   }, []);
 
-  const handleInput = useCallback((newPrompt) => {
+  const handleInput = newPrompt => {
     const p = newPrompt.toLocaleUpperCase();
-    setResults([...drugs.filter((i) => i.index.includes(p))]);
+    setResults([...drugs.filter(i => i.index.includes(p))]);
     setPrompt(newPrompt);
-  }, []);
+  };
 
   return (
     <View style={styles.base}>
@@ -145,7 +145,7 @@ const DrugList = () => {
         <FlatList
           data={results}
           renderItem={({item}) => <Item drug={item} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{backgroundColor: '#fff'}}
         />
