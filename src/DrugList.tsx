@@ -1,6 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useNavigation} from 'react-navigation-hooks';
-import {SafeAreaView} from 'react-navigation';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {
   TextInput,
@@ -11,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,18 +20,26 @@ import {
   saveDataToStorage,
   Drug,
 } from './db';
+import {StackParamList} from './App';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const Item = ({drug}: Drug) => {
-  const {navigate} = useNavigation();
+type ItemProps = {
+  drug: Drug;
+  navigate: (component: string, params: {drug: Drug}) => void;
+};
 
-  const handleItem = useCallback(() => navigate('DrugItem', {drug}), []);
+const Item = ({drug, navigate}: ItemProps) => {
+  const handleItem = useCallback(
+    () => navigate('DrugItem', {drug}),
+    [drug, navigate],
+  );
 
   //
   return (
     <TouchableOpacity onPress={handleItem}>
       <View style={itemStyles.item}>
         <View style={{flex: 15}}>
-          <Text style={{fontSize: 14}}>{drug.title}</Text>
+          <Text style={{fontSize: 14, color: 'black'}}>{drug.title}</Text>
           {drug.otherstr ? (
             <Text style={{color: 'gray'}}>{drug.otherstr}</Text>
           ) : null}
@@ -57,13 +64,15 @@ const itemStyles = StyleSheet.create({
   },
 });
 
+type DrugListProps = NativeStackScreenProps<StackParamList, 'DrugList'>;
+
 /**
  *
  */
-const DrugList = () => {
+const DrugList = ({navigation}: DrugListProps) => {
   // drugs sourse
-  const homeopathyUrl = `https://fuflomycin.github.io/fuflomycin/homeopathy.json`;
-  const rspUrl = 'https://fuflomycin.github.io/fuflomycin/rsp.json';
+  // const homeopathyUrl = 'https://fuflomycin.github.io/fuflomycin/homeopathy.json';
+  // const rspUrl = 'https://fuflomycin.github.io/fuflomycin/rsp.json';
 
   // all drugs
   const [drugs, setDrugs] = useState<Drug[]>([]);
@@ -78,7 +87,7 @@ const DrugList = () => {
   const [loading, setLoading] = useState(true);
 
   //
-  const {navigate} = useNavigation();
+  const {navigate} = navigation;
 
   /**
    * Load all drugs from github
@@ -105,13 +114,14 @@ const DrugList = () => {
         await saveDataToStorage(loadedDrugs);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInfo = useCallback(() => {
     navigate('DrugInfo');
-  }, []);
+  }, [navigate]);
 
-  const handleInput = newPrompt => {
+  const handleInput = (newPrompt: string) => {
     const p = newPrompt.toLocaleUpperCase();
     setResults([...drugs.filter(i => i.index.includes(p))]);
     setPrompt(newPrompt);
@@ -144,7 +154,7 @@ const DrugList = () => {
         </View>
         <FlatList
           data={results}
-          renderItem={({item}) => <Item drug={item} />}
+          renderItem={({item}) => <Item drug={item} navigate={navigate} />}
           keyExtractor={item => item.id}
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{backgroundColor: '#fff'}}
@@ -157,7 +167,7 @@ const DrugList = () => {
 export default DrugList;
 
 const styles = StyleSheet.create({
-  base: {backgroundColor: '#ff5959', flex: 1},
+  base: {backgroundColor: '#ff5959', flex: 1, color: '#000000'},
   panel: {
     backgroundColor: '#ff5959',
     padding: 10,
@@ -166,6 +176,7 @@ const styles = StyleSheet.create({
   },
   prompt: {
     borderColor: '#ef4949',
+    color: '#000000',
     borderWidth: 1,
     flex: 1,
     backgroundColor: '#fff',

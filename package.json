@@ -1,51 +1,49 @@
 {
   "name": "fuflomycin_rn",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
-    "@react-native-community/async-storage": "^1.12.1",
-    "@types/react-native-vector-icons": "^6.4.5",
-    "react": "16.9.0",
-    "react-native": "0.62.3",
+    "@react-native-async-storage/async-storage": "^1.24.0",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/native-stack": "^6.11.0",
+    "@types/react-native-vector-icons": "^6.4.18",
+    "react": "18.2.0",
+    "react-native": "0.74.3",
     "react-native-autoheight-webview": "^1.6.5",
-    "react-native-gesture-handler": "^1.5.2",
-    "react-native-reanimated": "^1.4.0",
-    "react-native-screens": "^1.0.0-alpha.23",
+    "react-native-gesture-handler": "^2.17.1",
+    "react-native-reanimated": "^3.13.0",
+    "react-native-safe-area-context": "^4.10.8",
+    "react-native-screens": "^3.33.0",
     "react-native-swiper": "^1.6.0",
-    "react-native-vector-icons": "^6.6.0",
-    "react-native-webview": "11.26.1",
-    "react-navigation": "^4.0.10",
-    "react-navigation-hooks": "^1.1.0",
-    "react-navigation-stack": "^1.10.3"
+    "react-native-vector-icons": "^10.1.0",
+    "react-native-webview": "^13.10.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
-    "@babel/runtime": "^7.6.2",
-    "@react-native-community/eslint-config": "^0.0.5",
-    "@types/jest": "^24.0.18",
-    "@types/react-native": "^0.60.22",
-    "@types/react-test-renderer": "16.9.0",
-    "babel-jest": "^24.9.0",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "^0.56.0",
-    "react-test-renderer": "16.9.0",
-    "typescript": "^3.6.3"
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@babel/runtime": "^7.20.0",
+    "@react-native/babel-preset": "0.74.85",
+    "@react-native/eslint-config": "0.74.85",
+    "@react-native/metro-config": "0.74.85",
+    "@react-native/typescript-config": "0.74.85",
+    "@types/react": "^18.2.6",
+    "@types/react-test-renderer": "^18.0.0",
+    "babel-jest": "^29.6.3",
+    "eslint": "^8.19.0",
+    "jest": "^29.6.3",
+    "prettier": "2.8.8",
+    "react-test-renderer": "18.2.0",
+    "typescript": "5.0.4"
   },
-  "jest": {
-    "preset": "react-native",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
-  }
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "yarn@3.6.4"
 }

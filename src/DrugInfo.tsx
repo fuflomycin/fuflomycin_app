@@ -1,5 +1,5 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback} from 'react';
-import {useNavigation} from 'react-navigation-hooks';
 import {
   SafeAreaView,
   StatusBar,
@@ -13,11 +13,14 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {StackParamList} from './App';
 
-const DrugInfo = () => {
-  const {goBack, navigate} = useNavigation();
+type DrugInfoProps = NativeStackScreenProps<StackParamList, 'DrugInfo'>;
 
-  const handleBack = useCallback(() => goBack(), []);
+const DrugInfo = ({navigation}: DrugInfoProps) => {
+  const {goBack} = navigation;
+
+  const handleBack = useCallback(() => goBack(), [goBack]);
 
   //
   return (

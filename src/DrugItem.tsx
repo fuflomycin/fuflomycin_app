@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import {useNavigation} from 'react-navigation-hooks';
 import {
   SafeAreaView,
   StatusBar,
@@ -7,37 +6,40 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  ScrollView,
+  // ScrollView,
   Dimensions,
   Linking,
   StyleSheet,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Drug} from './db';
 
 import AutoHeightWebView from 'react-native-autoheight-webview';
-import WebView from 'react-native-webview';
+// import WebView from 'react-native-webview';
 import Swiper from 'react-native-swiper';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackParamList} from './App';
+import {ShouldStartLoadRequest} from 'react-native-webview/lib/WebViewTypes';
 
 const assets = 'https://fuflomycin.github.io/fuflomycin/img/';
 
-const DrugItem = () => {
-  const {navigate, getParam, goBack} = useNavigation();
+type DrugItemProps = NativeStackScreenProps<StackParamList, 'DrugItem'>;
 
-  const drug: Drug = getParam('drug');
+const DrugItem = ({navigation, route}: DrugItemProps) => {
+  const {navigate} = navigation;
+  const {drug} = route.params;
 
-  const {width, height} = Dimensions.get('window');
+  const {width} = Dimensions.get('window');
 
   const handleBack = useCallback(() => {
     navigate('DrugList');
-  }, []);
+  }, [navigate]);
 
   const handleSource = useCallback(() => {
-    Linking.openURL(drug.source);
-  }, []);
+    Linking.openURL(drug.source ?? '');
+  }, [drug.source]);
 
-  const handleLoad = useCallback((event) => {
+  const handleLoad = useCallback((event: ShouldStartLoadRequest) => {
     if (event.url.slice(0, 4) === 'http') {
       Linking.openURL(event.url);
       return false;

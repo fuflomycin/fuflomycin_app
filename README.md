@@ -7,8 +7,8 @@ React Native приложение с базой бесполезных лека�
 
 ## Иконка
 
-- https://www.figma.com/file/NOLUMwzhxlN5xijKoqGcOo/Fuflomycin
+- <https://www.figma.com/file/NOLUMwzhxlN5xijKoqGcOo/Fuflomycin>
 
 ## База препаратов
 
-- https://github.com/fuflomycin/fuflomycin
+- <https://github.com/fuflomycin/fuflomycin>
